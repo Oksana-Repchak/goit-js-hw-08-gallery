@@ -4,7 +4,7 @@ const galleryList = document.querySelector('.js-gallery');
 const CloseModalBtn = document.querySelector('[data-action="close-lightbox"]');
 const imageEl = document.querySelector('.lightbox__image');
 const lightboxOverlay = document.querySelector('.lightbox__overlay');
-const modalWindowEl = document.querySelector('.lightbox');
+const modalWindowEl = document.querySelector('.js-lightbox');
 
 const galleryMarkup = createGalleryMarkup(galleryReference);
 galleryList.insertAdjacentHTML('afterbegin', galleryMarkup);
@@ -60,7 +60,9 @@ function onCloseModal(event) {
 
 function onOpenModal(modalEl) {
   window.addEventListener('keydown', onEscKeyDown);
-  // window.addEventListener('keydown', onPointerKeyDown);
+  window.addEventListener('keydown', onSlideImagesRight);
+  window.addEventListener('keydown', onSlideImagesLeft);
+
   modalEl.classList.add('is-open');
 }
 
@@ -76,11 +78,38 @@ function onEscKeyDown(event) {
   }
 }
 
-// function onPointerKeyDown(event) {
-//   if (event.code === 'ArrowRight') {
-// event.target = event.target.parentNode.nextSibling;
-// console.log(event.target.parentNode.nextSibling);
-// }
-//     if (event.code === 'ArrowLeft') {
-// }
-// }
+function onSlideImagesRight(event) {
+  const currentListItem = document
+    .querySelector(`[data-source="${imageEl.src}"]`)
+    .closest('.gallery__item');
+
+  if (event.code === 'ArrowRight') {
+    if (currentListItem !== galleryList.lastElementChild) {
+      imageEl.src = currentListItem.previousElementSibling.querySelector(
+        '.gallery__image',
+      ).dataset.source;
+    } else {
+      imageEl.src = galleryList.firstElementChild.querySelector(
+        '.gallery__image',
+      ).dataset.source;
+    }
+  }
+}
+
+function onSlideImagesLeft(event) {
+  const currentListItem = document
+    .querySelector(`[data-source="${imageEl.src}"]`)
+    .closest('.gallery__item');
+
+  if (event.code === 'ArrowLeft') {
+    if (currentListItem !== galleryList.firstElementChild) {
+      imageEl.src = currentListItem.previousElementSibling.querySelector(
+        '.gallery__image',
+      ).dataset.source;
+    } else {
+      imageEl.src = galleryList.lastElementChild.querySelector(
+        '.gallery__image',
+      ).dataset.source;
+    }
+  }
+}
