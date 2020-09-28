@@ -37,25 +37,28 @@ function onGalleryListElClick(event) {
   }
   onCloseModal();
   onOpenModal(modalWindowEl);
-  setAttributeValue(event.target.dataset.source);
+  setCleanAttributeValue(event.target.dataset.source);
 }
 
-function setAttributeValue(srs) {
-  imageEl.src = srs;
-}
-
-function cleanAttributeValue(src) {
-  imageEl.src = '';
+function setCleanAttributeValue(src) {
+  if (document.querySelector('.lightbox.is-open')) {
+    imageEl.src = src;
+  } else {
+    imageEl.src = '';
+  }
 }
 
 function onCloseModal(event) {
   window.removeEventListener('keydown', onEscKeyDown);
+  window.removeEventListener('keydown', onSlideImagesRight);
+  window.removeEventListener('keydown', onSlideImagesLeft);
+
   const curentActiveImage = document.querySelector('.lightbox.is-open');
 
   if (curentActiveImage) {
     curentActiveImage.classList.remove('is-open');
   }
-  cleanAttributeValue(event);
+  setCleanAttributeValue(event);
 }
 
 function onOpenModal(modalEl) {
@@ -85,7 +88,7 @@ function onSlideImagesRight(event) {
 
   if (event.code === 'ArrowRight') {
     if (currentListItem !== galleryList.lastElementChild) {
-      imageEl.src = currentListItem.previousElementSibling.querySelector(
+      imageEl.src = currentListItem.nextElementSibling.querySelector(
         '.gallery__image',
       ).dataset.source;
     } else {
